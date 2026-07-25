@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Future of IT — Full Vocabulary Quiz</title>
+<style>
+  :root{
+    --bg:#0B141B;
+    --panel:#121E27;
+    --panel-2:#0E1A22;
+    --trace:#1C2F3A;
+    --text:#DCE7EC;
+    --muted:#7C93A0;
+    --cyan:#33C7B8;
+    --amber:#F0A93E;
+    --ok:#3FBE7A;
+    --ok-bg:#123326;
+    --bad:#E15C51;
+    --bad-bg:#331715;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 15% 10%, rgba(51,199,184,0.07), transparent 40%),
+      radial-gradient(circle at 90% 85%, rgba(240,169,62,0.06), transparent 45%),
+      var(--bg);
+    color:var(--text);
+    font-family: "Segoe UI","Tahoma",sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:28px 14px 60px;
+  }
+  .board{
+    width:100%;
+    max-width:720px;
+  }
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .chip{
+    width:34px;height:34px;border-radius:7px;
+    background:linear-gradient(135deg, var(--cyan), #1c8478);
+    position:relative;
+    box-shadow:0 0 0 3px rgba(51,199,184,0.15);
+    flex:none;
+  }
+  .chip::before, .chip::after{
+    content:"";
+    position:absolute;
+    background:var(--cyan);
+  }
+  .chip::before{ top:-6px; left:8px; width:2px; height:6px; }
+  .chip::after{ bottom:-6px; right:8px; width:2px; height:6px; }
+  .brand h1{
+    font-size:16px;
+    margin:0;
+    font-family:"Consolas","Courier New",monospace;
+    letter-spacing:.5px;
+    color:var(--text);
+  }
+  .brand span{
+    display:block;
+    font-size:11px;
+    color:var(--muted);
+    font-family:"Consolas","Courier New",monospace;
+    margin-top:2px;
+  }
+  .score-pill{
+    font-family:"Consolas","Courier New",monospace;
+    font-size:13px;
+    background:var(--panel);
+    border:1px solid var(--trace);
+    padding:7px 14px;
+    border-radius:20px;
+    color:var(--amber);
+    white-space:nowrap;
+  }
+
+  .track{
+    height:6px;
+    border-radius:4px;
+    background:var(--trace);
+    overflow:hidden;
+    margin-bottom:14px;
+    position:relative;
+  }
+  .track-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--cyan), var(--amber));
+    width:0%;
+    transition:width .35s ease;
+  }
+
+  .dots{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-bottom:22px;
+  }
+  .dot{
+    width:26px;height:26px;
+    border-radius:6px;
+    border:1px solid var(--trace);
+    background:var(--panel-2);
+    color:var(--muted);
+    font-family:"Consolas","Courier New",monospace;
+    font-size:11px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:.15s all;
+    flex:none;
+  }
+  .dot:hover{ border-color:var(--cyan); }
+  .dot.current{ border-color:var(--amber); box-shadow:0 0 0 2px rgba(240,169,62,0.25); color:var(--amber); }
+  .dot.ok{ background:var(--ok-bg); border-color:var(--ok); color:#CFF3DE; }
+  .dot.bad{ background:var(--bad-bg); border-color:var(--bad); color:#FBD6D2; }
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--trace);
+    border-radius:14px;
+    padding:22px 20px;
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:
+      linear-gradient(var(--trace) 1px, transparent 1px),
+      linear-gradient(90deg, var(--trace) 1px, transparent 1px);
+    background-size: 26px 26px;
+    opacity:.18;
+    pointer-events:none;
+  }
+  .qmeta{
+    font-family:"Consolas","Courier New",monospace;
+    font-size:12px;
+    color:var(--cyan);
+    margin-bottom:10px;
+    display:flex;
+    justify-content:space-between;
+    position:relative;
+  }
+  .qtag{
+    background:rgba(51,199,184,0.1);
+    border:1px solid rgba(51,199,184,0.3);
+    padding:2px 9px;
+    border-radius:5px;
+  }
+  .qtext{
+    font-size:18px;
+    line-height:1.7;
+    margin:0 0 20px;
+    position:relative;
+    color:#EFF6F8;
+  }
+  .qtext b{ color:var(--amber); }
+
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    position:relative;
+  }
+  .opt{
+    text-align:left;
+    background:var(--panel-2);
+    border:1px solid var(--trace);
+    color:var(--text);
+    padding:13px 16px;
+    border-radius:10px;
+    font-size:15px;
+    cursor:pointer;
+    transition:.15s border-color, .15s background, .15s transform;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .opt .k{
+    font-family:"Consolas","Courier New",monospace;
+    color:var(--muted);
+    font-size:12px;
+    flex:none;
+  }
+  .opt:hover:not(.locked){
+    border-color:var(--cyan);
+    transform:translateX(2px);
+  }
+  .opt.correct{
+    background:var(--ok-bg);
+    border-color:var(--ok);
+    color:#CFF3DE;
+  }
+  .opt.wrong{
+    background:var(--bad-bg);
+    border-color:var(--bad);
+    color:#FBD6D2;
+  }
+  .opt.dim{
+    opacity:.45;
+  }
+  .opt.locked{ cursor:default; }
+
+  .feedback{
+    margin-top:16px;
+    padding:13px 15px;
+    border-radius:10px;
+    font-size:14px;
+    line-height:1.7;
+    display:none;
+    position:relative;
+  }
+  .feedback.show{ display:block; }
+  .feedback.ok{
+    background:var(--ok-bg);
+    border:1px solid var(--ok);
+    color:#CFF3DE;
+  }
+  .feedback.bad{
+    background:var(--bad-bg);
+    border:1px solid var(--bad);
+    color:#FBD6D2;
+  }
+  .feedback b{ color:inherit; }
+
+  .nav{
+    display:flex;
+    justify-content:space-between;
+    margin-top:18px;
+    gap:10px;
+  }
+  .nav-btn{
+    font-family:"Consolas","Courier New",monospace;
+    border:none;
+    padding:11px 22px;
+    border-radius:9px;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.2s opacity, .2s filter;
+  }
+  .prev-btn{
+    background:transparent;
+    border:1px solid var(--trace);
+    color:var(--muted);
+  }
+  .prev-btn:hover:not(:disabled){
+    border-color:var(--cyan);
+    color:var(--cyan);
+  }
+  .prev-btn:disabled{
+    opacity:.3;
+    cursor:not-allowed;
+  }
+  .next-btn{
+    background:linear-gradient(135deg, var(--cyan), #1c8478);
+    color:#04211D;
+    opacity:0;
+    pointer-events:none;
+  }
+  .next-btn.show{ opacity:1; pointer-events:auto; }
+  .next-btn:hover{ filter:brightness(1.08); }
+
+  .result{
+    text-align:center;
+    padding:40px 20px;
+  }
+  .result h2{
+    font-family:"Consolas","Courier New",monospace;
+    font-size:26px;
+    margin:0 0 8px;
+    color:var(--amber);
+  }
+  .result p{ color:var(--muted); font-size:14px; margin-bottom:22px;}
+  .result .big{
+    font-size:52px;
+    font-family:"Consolas","Courier New",monospace;
+    color:var(--cyan);
+    margin:10px 0;
+  }
+  .restart{
+    font-family:"Consolas","Courier New",monospace;
+    background:transparent;
+    border:1px solid var(--cyan);
+    color:var(--cyan);
+    padding:10px 20px;
+    border-radius:9px;
+    cursor:pointer;
+    font-size:14px;
+  }
+  .restart:hover{ background:rgba(51,199,184,.08); }
+
+  footer{
+    text-align:center;
+    color:var(--trace);
+    font-size:11px;
+    margin-top:24px;
+    font-family:"Consolas","Courier New",monospace;
+  }
+
+  .warn-banner{
+    margin-top:16px;
+    padding:13px 15px;
+    border-radius:10px;
+    font-size:13px;
+    line-height:1.7;
+    background:rgba(240,169,62,0.1);
+    border:1px solid var(--amber);
+    color:#FBE4BE;
+  }
+  .warn-banner b{ color:var(--amber); }
+</style>
+</head>
+<body>
+
+<div class="board">
+  <header>
+    <div class="brand">
+      <div class="chip"></div>
+      <div>
+        <h1>IT_TERMS.quiz</h1>
+        <span>Future of IT — full glossary, 36 terms</span>
+      </div>
+    </div>
+    <div class="score-pill" id="scorePill">0 / 0</div>
+  </header>
+
+  <div class="track"><div class="track-fill" id="trackFill"></div></div>
+  <div class="dots" id="dotsBox"></div>
+
+  <div class="card" id="quizCard">
+    <div class="qmeta">
+      <span class="qtag" id="qCounter">Question 1</span>
+      <span id="qSource"></span>
+    </div>
+    <p class="qtext" id="qText"></p>
+    <div class="options" id="optionsBox"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="nav">
+      <button class="nav-btn prev-btn" id="prevBtn">← Previous</button>
+      <button class="nav-btn next-btn" id="nextBtn">Next →</button>
+    </div>
+  </div>
+
+  <footer>All bold terms from "Future of IT" (IT_L5) — for revision and reinforcement only</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {tag:"Future of IT", text:"Which term refers to <b>the study and practice of techniques or use of equipment for dealing with information</b>?",
+   options:["IT","AI","R&D","ISP"], correct:0,
+   note:"IT (Information Technology) is defined in the text as the study and practice of dealing with information using equipment."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>physical equipment such as computers, phones and consumer electronics</b>?",
+   options:["Hardware","Software","Robots","Peripheral devices"], correct:0,
+   note:"Hardware is the physical equipment mentioned in the text as converging across devices."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>the problem of communication between humans and machines</b>?",
+   options:["Interface problem","Technophobic users","Voice processing","Virtual environment"], correct:0,
+   note:"The Interface problem is the communication issue between people and machines; Technophobic users are people who fear technology."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>computer programs that change speech into program commands and digital data</b>?",
+   options:["Voice and language recognition","Voice synthesis","Voice processing","Intelligent agents"], correct:0,
+   note:"Voice and language recognition converts speech into commands and data, unlike Voice synthesis which generates speech."},
+
+  {tag:"Future of IT", text:"What does <b>Technophobic users</b> mean?",
+   options:["Users who fear or strongly dislike technology","Users who are experts in technology","Users who work in artificial intelligence","Users who use the internet heavily"], correct:0,
+   note:"Technophobic users are people who have a fear or strong dislike of technology."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>programs used for communications over long distances</b>?",
+   options:["Telecomms applications","Teleworking","High bandwidth connections","Communicator badges"], correct:0,
+   note:"Telecomms applications are the communication programs themselves, while Teleworking is the practice of working remotely using them."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>electronic filing systems with records that can be easily sorted and searched</b>?",
+   options:["Databases","Virtual environments","Intelligent agents","Cyberspace"], correct:0,
+   note:"Smart databases are electronic filing systems for easily sorted and searched records."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>environments that are computer simulated</b>?",
+   options:["Virtual environments","Cyberspace","Visualisation technology","Voice processing"], correct:0,
+   note:"Virtual environments are simulated by computer, while Visualisation technology is the systems used to create such a reality."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>identity verification</b>, as mentioned alongside encryption in the text?",
+   options:["ID","Encryption","AI","Voice processing"], correct:0,
+   note:"ID stands for identity verification, distinct from Encryption which secures the data itself."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>transforming data into coded form to keep it secure</b>?",
+   options:["Encryption","ID","Database","E-cash"], correct:0,
+   note:"Encryption secures data by coding it; ID verifies identity, and E-cash is electronic money."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>changing speech into digital signals</b>?",
+   options:["Voice processing","Voice synthesis","Voice and language recognition","Voice synthesisers"], correct:0,
+   note:"Voice processing converts speech into digital signals, distinct from Voice synthesis which generates speech output."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>computer programs that perform tasks normally requiring human intelligence</b>?",
+   options:["AI","Intelligent agents","Voice synthesis","Virtual environment"], correct:0,
+   note:"AI (Artificial Intelligence) refers to programs that carry out tasks that normally require human intelligence."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>generating a human-sounding voice using electronic circuits</b>?",
+   options:["Voice synthesis","Voice processing","Voice and language recognition","Voice synthesisers"], correct:0,
+   note:"Voice synthesis is the process of generating speech, carried out by devices called Voice synthesisers."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>systems and devices used to create a virtual reality environment</b>?",
+   options:["Visualisation technology","Virtual environments","Cyberspace","AI"], correct:0,
+   note:"Visualisation technology creates the virtual reality environment, while Virtual environments are the simulated spaces themselves."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>electronic money used on the internet</b>?",
+   options:["E-cash","ID","Encryption","Online"], correct:0,
+   note:"E-cash is the electronic money the text says will be used on the Net."},
+
+  {tag:"Future of IT", text:"Which term does the text use as <b>another name for the Internet</b>?",
+   options:["The Net","Cyberspace","Virtual environment","High bandwidth connections"], correct:0,
+   note:"The text refers to the Internet as 'the Net' when introducing E-cash."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>working from home while communicating with the office by computer, telephone and fax</b>?",
+   options:["Teleworking","Telecomms applications","High bandwidth connections","Online"], correct:0,
+   note:"Teleworking is working from home while staying connected to the office, unlike Telecomms applications which are the tools themselves."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>communications links with a high signal capacity</b>, available on trains and planes?",
+   options:["High bandwidth connections","Telecomms applications","Communicator badges","Teleworking"], correct:0,
+   note:"High bandwidth connections are links with high signal capacity, as opposed to general Telecomms applications."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>devices that provide voice links to network computers</b>?",
+   options:["Communicator badges","Voice synthesisers","Smart phones","Intelligent agents"], correct:0,
+   note:"Communicator badges provide voice links to network computers, distinct from earphone-based Voice synthesisers."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>electronic devices, built into earphones, that generate a human-sounding voice</b>?",
+   options:["Voice synthesisers","Voice synthesis","Communicator badges","Voice processing"], correct:0,
+   note:"Voice synthesisers are the physical devices generating speech, while Voice synthesis is the process itself."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>humans with superhuman brainpower because their brains are directly linked to ultra-smart computers</b>?",
+   options:["Homo Cyberneticus","Homo Optimus","Homo Hybridus","Futurologists"], correct:0,
+   note:"Homo Cyberneticus has superhuman brainpower from a direct computer link, while Homo Optimus is biologically optimised and Homo Hybridus combines both body and mind enhancement."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>humans who are biologically optimised</b>?",
+   options:["Homo Optimus","Homo Cyberneticus","Homo Hybridus","Futurologists"], correct:0,
+   note:"Homo Optimus is the name given to biologically optimised humans."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>a human with both the body of an Olympic athlete and a brain connected to cyberspace</b>?",
+   options:["Homo Hybridus","Homo Cyberneticus","Homo Optimus","Futurologists"], correct:0,
+   note:"Homo Hybridus combines an athlete's body with a brain connected to cyberspace."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>the combination of all data on all computer networks worldwide, accessed via the internet</b>?",
+   options:["Cyberspace","Virtual environment","The Net","High bandwidth connections"], correct:0,
+   note:"Cyberspace is the combined data of all computer networks worldwide, accessed through the internet."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>exploring the human brain from the inside to find out how it works</b>?",
+   options:["Reverse engineering","Biotechnology","R&D","Futurologists"], correct:0,
+   note:"Reverse engineering means exploring something from the inside to understand how it works, applied here to the human brain."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>tiny computer-controlled mechanical devices sent along blood vessels to map the brain</b>?",
+   options:["Robots","Intelligent agents","Communicator badges","Voice synthesisers"], correct:0,
+   note:"Robots are the tiny scanning devices sent to map the brain from the inside."},
+
+  {tag:"Future of IT", text:"Which term describes computers that currently <b>process one item of data at a time</b>?",
+   options:["Serial","Parallel","Real-time","Online"], correct:0,
+   note:"Computers work in Serial, one item at a time, while brains work in Parallel, processing many items at once."},
+
+  {tag:"Future of IT", text:"Which term describes brains (and some computers) that <b>process many items of data at the same time</b>?",
+   options:["Parallel","Serial","Real-time","Online"], correct:0,
+   note:"Parallel processing handles many data items simultaneously, unlike Serial processing which handles one at a time."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>phones that use artificial intelligence to translate speech between languages instantly</b>?",
+   options:["Smart phones","Communicator badges","Voice synthesisers","Intelligent agents"], correct:0,
+   note:"Smart phones, as described in the text, translate speech into different languages in real-time."},
+
+  {tag:"Future of IT", text:"Which term describes translation happening <b>instantly</b>?",
+   options:["Real-time","Serial","Parallel","Online"], correct:0,
+   note:"Real-time means the translation happens instantly, as smart phones are said to do."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>computer programs that can be trained to watch, learn and start communicating</b>?",
+   options:["Intelligent agents","Robots","Communicator badges","Voice synthesisers"], correct:0,
+   note:"Intelligent agents are trained by observing behaviour and then start communicating on the user's behalf."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>the industrial application of biological science techniques</b>?",
+   options:["Biotechnology","Reverse engineering","R&D","Futurologists"], correct:0,
+   note:"Biotechnology is the industrial application of biological science techniques, mentioned as a focus area of R&D."},
+
+  {tag:"Future of IT", text:"What does <b>R&D</b> mean?",
+   options:["Research and development","Reverse and design","Robotics and diagnostics","Remote and digital"], correct:0,
+   note:"R&D stands for research and development, of which Biotechnology is named as a core focus."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>connecting people to the Internet</b>?",
+   options:["Online","Upload","E-cash","The Net"], correct:0,
+   note:"Putting people online means connecting them to the Internet, distinct from Upload which is copying data to a server."},
+
+  {tag:"Future of IT", text:"Which term refers to <b>copying data, such as medical information, from a client computer to a server</b>?",
+   options:["Upload","Download","Online","E-cash"], correct:0,
+   note:"Upload copies data from a client computer to a server, the opposite of Download."},
+
+  {tag:"Future of IT", text:"What does <b>Futurologists</b> mean?",
+   options:["People who specialise in predicting future developments","AI programs used for medical prediction","Scientists specialised in reverse engineering the brain","Engineers who build high bandwidth networks"], correct:0,
+   note:"Futurologists are people who predict future developments, some of whom foresee a supercomputer surpassing the human brain."}
+];
+
+// Shuffle question order (Fisher-Yates) so each attempt feels fresh
+(function shuffle(arr){
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+})(QUESTIONS);
+
+let current = 0;
+let score = 0;
+let finishArmed = false; // true once user has confirmed "Finish anyway" once
+const userAnswers = new Array(QUESTIONS.length).fill(null);
+
+const qCounter = document.getElementById('qCounter');
+const qSource = document.getElementById('qSource');
+const qText = document.getElementById('qText');
+const optionsBox = document.getElementById('optionsBox');
+const feedback = document.getElementById('feedback');
+const nextBtn = document.getElementById('nextBtn');
+const prevBtn = document.getElementById('prevBtn');
+const scorePill = document.getElementById('scorePill');
+const trackFill = document.getElementById('trackFill');
+const quizCard = document.getElementById('quizCard');
+const dotsBox = document.getElementById('dotsBox');
+
+const letters = ['A','B','C','D'];
+
+function recalcScore(){
+  score = 0;
+  QUESTIONS.forEach((q, i) => {
+    if(userAnswers[i] === q.correct) score++;
+  });
+  scorePill.textContent = score + ' / ' + QUESTIONS.length;
+}
+
+function renderDots(){
+  dotsBox.innerHTML = '';
+  QUESTIONS.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    d.textContent = i + 1;
+    if(i === current) d.classList.add('current');
+    else if(userAnswers[i] !== null){
+      d.classList.add(userAnswers[i] === q.correct ? 'ok' : 'bad');
+    }
+    d.addEventListener('click', () => {
+      current = i;
+      renderQuestion();
+    });
+    dotsBox.appendChild(d);
+  });
+}
+
+function renderQuestion(){
+  finishArmed = false;
+  const q = QUESTIONS[current];
+  const answeredCount = userAnswers.filter(a => a !== null).length;
+  qCounter.textContent = 'Question ' + (current+1) + ' / ' + QUESTIONS.length;
+  qSource.textContent = q.tag;
+  qText.innerHTML = q.text;
+  optionsBox.innerHTML = '';
+  feedback.className = 'feedback';
+  feedback.innerHTML = '';
+  trackFill.style.width = (answeredCount / QUESTIONS.length * 100) + '%';
+  prevBtn.disabled = current === 0;
+
+  const isLast = current === QUESTIONS.length - 1;
+  const alreadyAnswered = userAnswers[current] !== null;
+  nextBtn.textContent = isLast ? 'See results →' : (alreadyAnswered ? 'Next →' : 'Skip for now →');
+  nextBtn.classList.add('show');
+
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = '<span>' + opt + '</span><span class="k">' + letters[i] + '</span>';
+    btn.addEventListener('click', () => selectOption(i));
+    optionsBox.appendChild(btn);
+  });
+
+  if(alreadyAnswered){
+    lockOptions(userAnswers[current]);
+  }
+
+  recalcScore();
+  renderDots();
+}
+
+function lockOptions(selectedIndex){
+  const q = QUESTIONS[current];
+  const allOpts = optionsBox.querySelectorAll('.opt');
+
+  allOpts.forEach((el, idx) => {
+    el.classList.add('locked');
+    if(idx === q.correct){
+      el.classList.add('correct');
+    } else if(idx === selectedIndex){
+      el.classList.add('wrong');
+    } else {
+      el.classList.add('dim');
+    }
+  });
+
+  if(selectedIndex === q.correct){
+    feedback.className = 'feedback show ok';
+    feedback.innerHTML = '<b>&#10003; Correct!</b> ' + q.note;
+  } else {
+    feedback.className = 'feedback show bad';
+    feedback.innerHTML = '<b>&#10007; Incorrect.</b> The correct answer is "' + q.options[q.correct] + '". ' + q.note;
+  }
+
+  nextBtn.textContent = (current === QUESTIONS.length - 1) ? 'See results →' : 'Next →';
+}
+
+function selectOption(i){
+  if(userAnswers[current] !== null) return;
+  userAnswers[current] = i;
+  lockOptions(i);
+  recalcScore();
+  renderDots();
+}
+
+nextBtn.addEventListener('click', () => {
+  const isLast = current === QUESTIONS.length - 1;
+  if(!isLast){
+    current++;
+    renderQuestion();
+    return;
+  }
+
+  const unanswered = userAnswers
+    .map((a, i) => a === null ? i + 1 : null)
+    .filter(n => n !== null);
+
+  if(unanswered.length > 0 && !finishArmed){
+    feedback.className = 'feedback show';
+    feedback.style.background = 'rgba(240,169,62,0.1)';
+    feedback.style.border = '1px solid var(--amber)';
+    feedback.style.color = '#FBE4BE';
+    feedback.innerHTML = '<b>Heads up —</b> you still have ' + unanswered.length +
+      ' unanswered question' + (unanswered.length > 1 ? 's' : '') + ': #' + unanswered.join(', #') +
+      '. Click a number above to jump back, or press the button again to finish anyway.';
+    nextBtn.textContent = 'Finish anyway →';
+    finishArmed = true;
+    return;
+  }
+
+  showResult();
+});
+
+prevBtn.addEventListener('click', () => {
+  if(current > 0){
+    current--;
+    renderQuestion();
+  }
+});
+
+function showResult(){
+  trackFill.style.width = '100%';
+  const total = QUESTIONS.length;
+  const unanswered = total - userAnswers.filter(a => a !== null).length;
+  const pct = Math.round(score / total * 100);
+  let msg = 'Still room to improve — give it another round.';
+  if(pct >= 90) msg = 'Excellent! These terms are locked in.';
+  else if(pct >= 70) msg = 'Very good — just review the ones you missed.';
+  else if(pct >= 50) msg = 'Not bad, but a bit more revision will help.';
+
+  const unansweredLine = unanswered > 0
+    ? `<p style="color:var(--amber)">${unanswered} question${unanswered>1?'s were':' was'} left unanswered (counted as incorrect).</p>`
+    : '';
+
+  quizCard.innerHTML = `
+    <div class="result">
+      <h2>Quiz complete</h2>
+      <div class="big">${score} / ${total}</div>
+      <p>${msg} — score ${pct}%</p>
+      ${unansweredLine}
+      <button class="restart" id="restartBtn">Restart quiz</button>
+    </div>
+  `;
+  document.getElementById('restartBtn').addEventListener('click', () => {
+    location.reload();
+  });
+}
+
+renderQuestion();
+</script>
+</body>
+</html>
